@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="ftu8dcw7" jpegQuality="80" compressPNG="true">
+  <resources>
+    <component id="11aw61" name="Extcom.xml" path="/"/>
+    <component id="11aw62" name="Main.xml" path="/" exported="true"/>
+  </resources>
+  <publish name="Main" path="E:\u3dProject\YKFramework\YKFramworkCore\YKFramwork\Assets\AB\ThreeEliminate\MainPack"/>
+</packageDescription>

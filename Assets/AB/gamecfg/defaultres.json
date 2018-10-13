@@ -1,0 +1,36 @@
+{
+    "groups": [
+        {
+            "sceneName": "ThreeEliminate",
+            "keys": [
+                "Main_fui"
+            ]
+        },
+        {
+            "sceneName": "Loading",
+            "keys": [
+                "Loading_fui"
+            ]
+        }
+    ],
+    "resources": [
+        {
+            "ABName": "loadscenepack",
+            "path": "Assets/AB/ThreeEliminate/loadingGroup/LoadScenePack/Loading_fui.bytes",
+            "name": "Loading_fui",
+            "type": ".bytes",
+            "isKeepInMemory": true,
+            "isResourcesPath": false,
+            "isFairyGuiPack": true
+        },
+        {
+            "ABName": "threeeliminatefguipack",
+            "path": "Assets/AB/ThreeEliminate/MainPack/ThreeEliminateFGUIPack/Main_fui.bytes",
+            "name": "Main_fui",
+            "type": ".bytes",
+            "isKeepInMemory": true,
+            "isResourcesPath": false,
+            "isFairyGuiPack": true
+        }
+    ]
+}

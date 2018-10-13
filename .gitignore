@@ -1,0 +1,7 @@
+/Library/
+/Temp/
+/Release/
+/AB/
+/.vs/
+*.csproj
+*.sln

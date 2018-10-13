@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="960,640">
+  <controller name="loadCtrl" pages="0,加载完成,1,正在加载。。。" selected="0"/>
+  <displayList>
+    <component id="n0_11aw6" name="BtnStart" src="11aw61" fileName="Button1.xml" xy="404,442" size="174,58">
+      <gearDisplay controller="loadCtrl" pages="0"/>
+      <Button title="进入游戏"/>
+    </component>
+    <text id="n1_11aw6" name="n1" xy="371,544" size="221,34" font="SimSun" fontSize="30" color="#ffffff" text="正在加载。。。">
+      <gearDisplay controller="loadCtrl" pages="1"/>
+    </text>
+  </displayList>
+</component>

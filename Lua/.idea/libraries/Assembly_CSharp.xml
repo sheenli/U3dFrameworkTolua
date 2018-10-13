@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Assembly-CSharp" type="Lua">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Assembly-CSharp.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
