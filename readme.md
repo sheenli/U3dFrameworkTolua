@@ -86,3 +86,6 @@
 由于没有太多的时间和经历写文档所以只能暂时让各位动手能力强的一起完善
 如果在这个过程当中有发现任何BUG和有任何意见都可以提issues
 也可以加入QQ群：[931217607](https://jq.qq.com/?_wv=1027&k=5kT8aGe)
+
+还有一个不怎么完善的Xlua版本：
+https://github.com/sheenli/YKFrameworkXLUA
