@@ -12,7 +12,7 @@
 	*  StreamingAssets `流文件夹，ab会生成到这` 
 	*  ToLua `tolua源码`
 	*  YKFramwork   `框架文件夹`
-		*   Editor `框架编辑文件夹`
+		*  Editor `框架编辑文件夹`
 		*  Resources `框架默认配置资源存放文件夹`
 		*  Script `框架脚本文件夹`
 * FGUIProject `案例当中的fairygui工程`
@@ -22,10 +22,7 @@
 	* LuaAPI `用于idea提示用的源码`
 
 * Release `发布会自动生成到的文件夹`
-* Assembly-CSharp.zip `用于idea提示用的源码`
-* LuaApi.zip `用于idea提示用的源码`
-* mscorlib.zip `用于idea提示用的源码`
-* UnityEngine `用于idea提示用的源码`
+* LuaLib `用于idea提示用的源码`
 
 ## 特殊文件说明
 
