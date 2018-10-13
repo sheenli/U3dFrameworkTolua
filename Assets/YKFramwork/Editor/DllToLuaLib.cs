@@ -60,7 +60,7 @@ public class DllToLuaLib : Editor {
 			}
 		}
 
-		foreach (string dllName in dllNameDict.Keys)
+        foreach (string dllName in dllNameDict.Keys)
 		{
 			Dictionary<string, byte[]> fileDict = new Dictionary<string, byte[]>();
 			Type[] types = dllNameDict[dllName];
