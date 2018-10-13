@@ -11,7 +11,15 @@ using ICSharpCode.SharpZipLib.Zip;
 public class DllToLuaLib : Editor {
 
 	private static string[] LUA_KEYWORDS = { "local", "function", "end", "then" };
-	private static string[] DLL_NAMES = { "mscorlib", "UnityEngine", "Assembly-CSharp" };
+	private static string[] DLL_NAMES = {
+		"mscorlib",
+#if UNITY_2017_1_OR_NEWER
+		"UnityEngine.CoreModule",
+#else
+		"UnityEngine",
+#endif
+		"Assembly-CSharp"
+	};
 
 	[MenuItem("Tools/DllToLuaLib", false, -100)]
 	private static void GenDlls()
@@ -20,7 +28,13 @@ public class DllToLuaLib : Editor {
 		List<MethodInfo> allExtensionMethodList = new List<MethodInfo>();
 		foreach (string dllName in DLL_NAMES)
 		{
-			Assembly assembly = Assembly.Load(dllName);
+			Assembly assembly = null;
+			try
+			{
+				assembly = Assembly.Load(dllName);
+			}
+			catch (FileNotFoundException) { }
+
 			if (assembly != null)
 			{
 				Type[] types = assembly.GetTypes();
@@ -79,11 +93,17 @@ public class DllToLuaLib : Editor {
 			foreach (string nameSpace in nameSpaceSet)
 			{
 				string fileName = nameSpace + ".ns.lua";
-				string content = nameSpace + " = {}";
+				StringBuilder contentSb = new StringBuilder();
+				contentSb.Append("---@class ");
+				contentSb.Append(nameSpace);
+				contentSb.AppendLine();
+				contentSb.Append(nameSpace);
+				contentSb.Append(" = {}");
+				string content = contentSb.ToString();
 				fileDict[fileName] = Encoding.UTF8.GetBytes(content);
 			}
-			string zipFileName = Application.dataPath + "/../" + dllName + ".zip";
-			ZipDerctory(zipFileName, fileDict);
+			string zipFileName = Application.dataPath + "/../LuaLib/" + dllName + ".zip";
+			WriteZip(zipFileName, fileDict);
 			Debug.Log(dllName + ".zip generating is complete!");
 		}
 	}
@@ -104,7 +124,7 @@ public class DllToLuaLib : Editor {
 
 	private static void GenType(Type type, List<MethodInfo> extensionMethodList, out string fileName, out string content)
 	{
-		string typeName = TypeToString(type, true);
+		string typeName = TypeToString(type, false, true);
 		string typeFileName = typeName + ".lua";
 		StringBuilder typeScriptSb = new StringBuilder();
 		typeScriptSb.Append("---@class ");
@@ -112,7 +132,7 @@ public class DllToLuaLib : Editor {
 		typeScriptSb.Append(" : ");
 		if (type.BaseType != null)
 		{
-			typeScriptSb.Append(TypeToString(type.BaseType, true));
+			typeScriptSb.Append(TypeToString(type.BaseType, false, true));
 		}
 		else
 		{
@@ -295,14 +315,18 @@ public class DllToLuaLib : Editor {
 				{
                     ParameterInfo param = paramList[paramIndex];
                     typeScriptSb.Append("---@param ");
-					typeScriptSb.Append(GetParamName(param));
-					typeScriptSb.Append(" ");
-					typeScriptSb.Append(TypeToString(param.ParameterType));
 					if (param.IsDefined(typeof(ParamArrayAttribute), false))
 					{
-						typeScriptSb.Append("|");
+						typeScriptSb.Append("... ");
 						typeScriptSb.Append(TypeToString(param.ParameterType.GetElementType()));
+						typeScriptSb.Append("|");
 					}
+					else
+					{
+						typeScriptSb.Append(GetParamName(param));
+						typeScriptSb.Append(" ");
+					}
+					typeScriptSb.Append(TypeToString(param.ParameterType));
 					typeScriptSb.AppendLine();
 				}
 				if (returnList.Count > 0)
@@ -328,14 +352,14 @@ public class DllToLuaLib : Editor {
 				}
 				typeScriptSb.Append(methodName);
 				typeScriptSb.Append("(");
-				if (paramList.Count > 0)
+				for (int paramIndex = 0; paramIndex < paramList.Count; paramIndex++)
 				{
-					typeScriptSb.Append(GetParamName(paramList[0]));
-				}
-				for (int paramIndex = 1; paramIndex < paramList.Count; paramIndex++)
-				{
-					typeScriptSb.Append(", ");
-					typeScriptSb.Append(GetParamName(paramList[paramIndex]));
+					if (paramIndex > 0)
+					{
+						typeScriptSb.Append(", ");
+					}
+					ParameterInfo param = paramList[paramIndex];
+					typeScriptSb.Append(param.IsDefined(typeof(ParamArrayAttribute), false) ? "..." : GetParamName(param));
 				}
 				typeScriptSb.Append(") end");
 				typeScriptSb.AppendLine();
@@ -351,7 +375,7 @@ public class DllToLuaLib : Editor {
 		content = typeScriptSb.ToString();
 	}
 
-	private static string TypeToString(Type type, bool classDefine = false)
+	private static string TypeToString(Type type, bool inFun = false, bool classDefine = false)
 	{
 		if (!classDefine)
         {
@@ -382,7 +406,7 @@ public class DllToLuaLib : Editor {
 
 			if (type.IsArray)
 			{
-				return TypeToString(type.GetElementType()) + "[]";
+				return TypeToString(type.GetElementType(), inFun) + "[]";
             }
 
             if (type.IsGenericType)
@@ -390,7 +414,7 @@ public class DllToLuaLib : Editor {
                 Type[] genericArgTypes = type.GetGenericArguments();
                 if (genericArgTypes.Length == 1 && typeof(IList<>).MakeGenericType(genericArgTypes).IsAssignableFrom(type))
                 {
-                    return TypeToString(genericArgTypes[0]) + "[]";
+                    return TypeToString(genericArgTypes[0], inFun) + "[]";
                 }
 
                 if (genericArgTypes.Length == 2 && typeof(IDictionary<,>).MakeGenericType(genericArgTypes).IsAssignableFrom(type))
@@ -406,14 +430,14 @@ public class DllToLuaLib : Editor {
 			{
 				MethodInfo method = type == typeof(Delegate) || type == typeof(MulticastDelegate) ?
 					type.GetMethod("DynamicInvoke") : type.GetMethod("Invoke");
-				return MethodToString(method);
+				return MethodToString(method, inFun);
 			}
 		}
 
 		if (type.FullName == null)
 		{
 			//GenericTypeDefinition like T
-			return TypeToString(type.BaseType ?? typeof(object));
+			return TypeToString(type.BaseType ?? typeof(object), inFun, classDefine);
 		}
 
         char[] typeNameChars = type.ToString().ToCharArray();
@@ -457,7 +481,7 @@ public class DllToLuaLib : Editor {
         return sb.ToString();
 	}
 
-	private static string MethodToString(MethodInfo method)
+	private static string MethodToString(MethodInfo method, bool inFun = false)
 	{
 		if (method == null)
 		{
@@ -486,58 +510,61 @@ public class DllToLuaLib : Editor {
 			}
 		}
 
-		return MethodToString(paramList, returnList);
+		return MethodToString(paramList, returnList, inFun);
 	}
 
-	private static string MethodToString(List<ParameterInfo> paramList, List<ParameterInfo> returnList)
+	private static string MethodToString(List<ParameterInfo> paramList, List<ParameterInfo> returnList, bool inFun = false)
 	{
 		StringBuilder sb = new StringBuilder();
-		sb.Append("fun(");
-		if (paramList.Count > 0)
+		if (inFun && returnList.Count > 0)
 		{
-			sb.Append(GetParamName(paramList[0]));
-			sb.Append(":");
-			sb.Append(ParamTypeToString(paramList[0].ParameterType));
+			sb.Append("(");
 		}
-		for (int paramIndex = 1; paramIndex < paramList.Count; paramIndex++)
-        {
-            ParameterInfo param = paramList[paramIndex];
-            sb.Append(", ");
-			sb.Append(GetParamName(param));
-			sb.Append(":");
-			sb.Append(ParamTypeToString(param.ParameterType));
+		sb.Append("fun(");
+		for (int paramIndex = 0; paramIndex < paramList.Count; paramIndex++)
+		{
+			if (paramIndex > 0)
+			{
+				sb.Append(", ");
+			}
+			ParameterInfo param = paramList[paramIndex];
 			if (param.IsDefined(typeof(ParamArrayAttribute), false))
 			{
-				sb.Append("|");
+				sb.Append("...:");
 				sb.Append(TypeToString(param.ParameterType.GetElementType()));
+				sb.Append("|");
 			}
+			else
+			{
+				sb.Append(GetParamName(param));
+				sb.Append(":");
+			}
+			sb.Append(TypeToString(param.ParameterType));
 		}
 		sb.Append(")");
 		if (returnList.Count > 0)
 		{
 			sb.Append(":");
-			sb.Append(ParamTypeToString(returnList[0].ParameterType));
+			if (returnList.Count > 1)
+			{
+				sb.Append("(");
+			}
 			for (int returnIndex = 1; returnIndex < returnList.Count; returnIndex++)
 			{
-				sb.Append(", ");
-				sb.Append(ParamTypeToString(returnList[returnIndex].ParameterType));
+				if (returnIndex > 0)
+				{
+					sb.Append(", ");
+				}
+				sb.Append(TypeToString(returnList[returnIndex].ParameterType, returnList.Count == 1));
 			}
-		}
-		return sb.ToString();
-	}
-
-	private static string ParamTypeToString(Type paramType)
-	{
-		StringBuilder sb = new StringBuilder();
-		bool isDelegate = typeof(Delegate).IsAssignableFrom(paramType);
-		if (isDelegate)
-		{
-			sb.Append("(");
-		}
-		sb.Append(TypeToString(paramType));
-		if (isDelegate)
-		{
-			sb.Append(")");
+			if (returnList.Count > 1)
+			{
+				sb.Append(")");
+			}
+			if (inFun)
+			{
+				sb.Append(")");
+			}
 		}
 		return sb.ToString();
 	}
@@ -556,9 +583,15 @@ public class DllToLuaLib : Editor {
 		return paramName;
 	}
 
-	private static void ZipDerctory(string zipedDirectory, Dictionary<string, byte[]> fileDict, int compressionLevel = 9)
+	private static void WriteZip(string zipFileName, Dictionary<string, byte[]> fileDict, int compressionLevel = 9)
 	{
-		FileStream fileStream = File.Create(zipedDirectory);
+		FileInfo zipFile = new FileInfo(zipFileName);
+		DirectoryInfo dir = zipFile.Directory;
+		if (!dir.Exists)
+		{
+			dir.Create();
+		}
+		FileStream fileStream = zipFile.Create();
 		ZipOutputStream zipStream = new ZipOutputStream(fileStream);
 		zipStream.SetLevel(compressionLevel);
 		foreach (string fileName in fileDict.Keys)
@@ -567,7 +600,6 @@ public class DllToLuaLib : Editor {
 			byte[] buffer = fileDict[fileName];
 			zipStream.Write(buffer, 0, buffer.Length);
 		}
-		zipStream.Flush();
 		zipStream.Close();
 		fileStream.Close();
 	}

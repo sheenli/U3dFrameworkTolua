@@ -1,8 +1,7 @@
 <component name="libraryTable">
   <library name="mscorlib" type="Lua">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../mscorlib.zip!/" />
-      <root url="jar://$PROJECT_DIR$/../UnityEngine.zip!/" />
+      <root url="jar://$PROJECT_DIR$/../LuaLib/mscorlib.zip!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

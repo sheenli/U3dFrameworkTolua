@@ -3,14 +3,13 @@
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/YKFramwork" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/ToLua" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/YKFramwork" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="LuaApi" level="project" />
+    <orderEntry type="library" exported="" name="Assembly-CSharp" level="project" />
     <orderEntry type="library" exported="" name="mscorlib" level="project" />
     <orderEntry type="library" exported="" name="UnityEngine" level="project" />
-    <orderEntry type="library" exported="" name="Assembly-CSharp" level="project" />
   </component>
 </module>
