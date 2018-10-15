@@ -1,3 +1,8 @@
+#YKFramework
+
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](https://github.com/sheenli/YKFrameworkTolua/pulls)
+[![QQ群](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://jq.qq.com/?_wv=1027&k=5kT8aGe)
+
 # YKFramework简介
 [TOC]
 
