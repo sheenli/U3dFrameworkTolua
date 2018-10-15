@@ -75,9 +75,14 @@
 * 1.熟练使用C#
 * 2.熟悉Tolua (当然你也可以剥离掉lua部分纯c#写也是完全支持的)
 * 3.熟练使用Fairygui（当然其实这个框架不一定需要会，只是我的例子是Fairygui的，当然UI管理相关的都是Fairygui的）
+## 运行第一个例子
+如果上面的东西你都了解了的话那就简单了
 
-如果上面的东西你都了解了的话那就简单了，打开工程里面的main场景
-从GameCore 上面绑定的 Initialization脚本里面的Awake开始看
+* 1.创建一个Assets/Source/Generate 文件夹
+* 2.点击菜单栏 Lua/Generate All 
+* 3.打开工程里面的main场景
+* 4.从GameCore 上面绑定的 Initialization脚本里面的Awake开始看
+
 
 ## 最后
 由于没有太多的时间和经历写文档所以只能暂时让各位动手能力强的一起完善
