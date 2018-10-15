@@ -1,7 +1,9 @@
-#YKFramework
-
+# YKFramework
+[![license](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/sheenli/YKFrameworkTolua/blob/master/LICENSE.TXT)
+[![release](https://img.shields.io/badge/release-v1.0.0-blue.svg)](https://github.com/Tencent/xLua/releases)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](https://github.com/sheenli/YKFrameworkTolua/pulls)
 [![QQ群](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://jq.qq.com/?_wv=1027&k=5kT8aGe)
+
 
 # YKFramework简介
 [TOC]
