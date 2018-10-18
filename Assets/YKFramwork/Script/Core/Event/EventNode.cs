@@ -43,19 +43,55 @@ public class EventDispatcherNode : LogicNode
         /// </summary>
         public bool dispatchOnce;
 
-        public EventInfo(string type, EventListenerDele _listener, int _priority = 0, bool _dispatchOnce = false)
+        private EventInfo(string type, EventListenerDele _listener, int _priority = 0, bool _dispatchOnce = false)
+        {
+            Set(type, _listener, _priority,_dispatchOnce);
+        }
+
+        public void Set(string type, EventListenerDele _listener, int _priority = 0, bool _dispatchOnce = false)
         {
             this.priority = _priority;
             this.dispatchOnce = _dispatchOnce;
             this.eventType = type;
             this.listener = _listener;
         }
+
+        public void Clean()
+        {
+            this.listener = null;
+            this.dispatchOnce = false;
+            this.eventType = string.Empty;
+            this.priority = 0;
+        }
+
+        private static Queue<EventInfo> mPools = new Queue<EventInfo>();
+
+        public static EventInfo Get(string type, EventListenerDele _listener, int _priority = 0, bool _dispatchOnce = false)
+        {
+            EventInfo info = null;
+            if (mPools.Count > 0)
+            {
+                info = mPools.Dequeue();
+                info.Set(type, _listener, _priority, _dispatchOnce);
+            }
+            else
+            {
+                info = new EventInfo(type, _listener, _priority, _dispatchOnce);
+            }
+            return info;
+        }
+
+        public static void Return(EventInfo info)
+        {
+            info.Clean();
+            mPools.Enqueue(info);
+        }
     }
 
     /// <summary>
     /// 用于在每逻辑帧开始的时候维护消息监听器序列
     /// </summary>
-    private struct ListenerPack
+    private class ListenerPack
     {
         public string eventKey;
         public EventInfo listener;
@@ -63,9 +99,42 @@ public class EventDispatcherNode : LogicNode
 
         public ListenerPack(EventInfo lis, string eKey, bool addOrRe)
         {
+            Set(lis, eKey, addOrRe);
+        }
+
+        public void Set(EventInfo lis, string eKey, bool addOrRe)
+        {
             listener = lis;
             eventKey = eKey;
             addOrRemove = addOrRe;
+        }
+        public void Clean()
+        {
+            listener = null;
+            eventKey = string.Empty;
+            addOrRemove = false;
+        }
+
+        private static Queue<ListenerPack> mListenerPackPools = new Queue<ListenerPack>();
+        public static ListenerPack Get(EventInfo info, string eKey, bool addOrRe)
+        {
+            ListenerPack pack = null;
+            if (mListenerPackPools.Count > 0)
+            {
+                pack = mListenerPackPools.Dequeue();
+                pack.Set(info, eKey, addOrRe);
+            }
+            else
+            {
+                pack = new ListenerPack(info, eKey, addOrRe);
+            }
+            return pack;
+        }
+
+        public static void Return(ListenerPack info)
+        {
+            info.Clean();
+            mListenerPackPools.Enqueue(info);
         }
     }
 
@@ -130,12 +199,12 @@ public class EventDispatcherNode : LogicNode
         {
             lock (m_listenersToUpdate)
             {
-                m_listenersToUpdate.Enqueue(new ListenerPack(new EventInfo(type, _listener, _priority, _dispatchOnce), type, true));
+                m_listenersToUpdate.Enqueue(ListenerPack.Get(EventInfo.Get(type, _listener, _priority, _dispatchOnce), type, true));
             }
         }
         else
         {
-            m_listenersToUpdate.Enqueue(new ListenerPack(new EventInfo(type, _listener, _priority, _dispatchOnce), type, true));
+            m_listenersToUpdate.Enqueue(ListenerPack.Get(EventInfo.Get(type, _listener, _priority, _dispatchOnce), type, true));
         }
     }
 
@@ -157,12 +226,12 @@ public class EventDispatcherNode : LogicNode
         {
             lock (m_listenersToUpdate)
             {
-                m_listenersToUpdate.Enqueue(new ListenerPack(new EventInfo(type, _listener), type, false));
+                m_listenersToUpdate.Enqueue(ListenerPack.Get(EventInfo.Get(type, _listener), type, false));
             }
         }
         else
         {
-            m_listenersToUpdate.Enqueue(new ListenerPack(new EventInfo(type, _listener), type, false));
+            m_listenersToUpdate.Enqueue(ListenerPack.Get(EventInfo.Get(type, _listener), type, false));
         }
     }
 
@@ -197,7 +266,7 @@ public class EventDispatcherNode : LogicNode
 
         List<EventInfo> listenerList = mEventDic[type];
 
-        EventInfo ev = new EventInfo(type, _listener, _priority, _dispatchOnce);
+        EventInfo ev = EventInfo.Get(type, _listener, _priority, _dispatchOnce);
 
         int pos = 0;
         int countListenerList = listenerList.Count;
@@ -242,6 +311,7 @@ public class EventDispatcherNode : LogicNode
         if (ev != null)
         {
             listenerList.Remove(ev);
+            EventInfo.Return(ev);
         }
     }
 
@@ -280,6 +350,7 @@ public class EventDispatcherNode : LogicNode
             {
                 DetachListenerNow(pack.eventKey, pack.listener.listener);
             }
+            ListenerPack.Return(pack);
         }
     }
 
