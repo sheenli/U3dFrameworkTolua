@@ -292,56 +292,21 @@ public class EventDispatcherNode : LogicNode
 
     #region 派发消息相关
     /// <summary>
-    /// 发送无参数消息
+    /// 发送一个默认的int类型值
     /// </summary>
-    /// <param name="key">消息机制</param>
-    public void QueueEvent(int key)
-    {
-        QueueEvent(key.ToString());
-    }
-
-    private List<EventData> mEventDataPools = new List<EventData>();
-
-    public T GetEventData<T> () where T : EventData
-    {
-        if (mEventDataPools.Count > 0)
-        {
-            for(int i = 0;i< mEventDataPools.Count;i++)
-            {
-                if (mEventDataPools[i] is T)
-                {
-                    EventData ev = mEventDataPools[i];
-                    mEventDataPools.Remove(ev);
-                    return ev as T;
-                }
-            }
-        }
-        return Activator.CreateInstance(typeof(T)) as T;
-    }
-    /// <summary>
-    /// 发送无参数消息
-    /// </summary>
-    /// <param name="key">消息机制</param>
+    /// <param name="key"></param>
     public void QueueEvent(string key)
     {
-        if (mEventDataPools.Count > 0)
-        {
-        }
         QueueEvent(new EventData(key));
     }
 
     /// <summary>
-    /// 派发消息
+    /// 发送一个默认的int类型值
     /// </summary>
-    /// <typeparam name="T">消息传入的参数</typeparam>
-    /// <param name="key">要发送的消息id</param>
-    /// <param name="value">要发的消息内容</param>
-    public void QueueEvent<T>(int key, T value)
+    /// <param name="key"></param>
+    public void QueueEvent(int key)
     {
-        EventData data = GetEventData<EventData>();
-        data.name = key.ToString();
-        data.value = value;
-        QueueEvent(data);
+        QueueEvent(key.ToString());
     }
 
     /// <summary>
@@ -349,38 +314,14 @@ public class EventDispatcherNode : LogicNode
     /// </summary>
     /// <param name="key"></param>
     /// <param name="value"></param>
-    public void QueueEvent(int key, int value)
+    public void QueueEvent<T>(int key, T value)
     {
-        EventData data = GetEventData<EventData>();
-        data.name = key.ToString();
-        data.value = value;
-        QueueEvent(data);
+        QueueEvent<T>(key.ToString(), value);
     }
 
-    /// <summary>
-    /// 发送默认的消息在
-    /// </summary>
-    /// <param name="key"></param>
-    /// <param name="value"></param>
-    public void QueueEvent(int key, string value)
-    {
-        EventData data = GetEventData<EventData>();
-        data.name = key.ToString();
-        data.value = value;
-        QueueEvent(data);
-    }
-
-    /// <summary>
-    /// 派发消息
-    /// </summary>
-    /// <typeparam name="T">消息传入的参数</typeparam>
-    /// <param name="key">要发送的消息id</param>
-    /// <param name="value">要发的消息内容</param>
     public void QueueEvent<T>(string key, T value)
     {
-        EventData data = GetEventData<EventData>();
-        data.name = key.ToString();
-        data.value = value;
+        EventData<T> data = new EventData<T>(key.ToString(), value);
         QueueEvent(data);
     }
 

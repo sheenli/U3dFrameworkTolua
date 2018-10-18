@@ -13,10 +13,6 @@ public class EventData
     /// </summary>
     public string name;
 
-    /// <summary>
-    /// 事件发送的类型
-    /// </summary>
-    public virtual object value { get; set; }
     public EventData(string name)
     {
         this.name = name;
@@ -34,25 +30,25 @@ public class EventData
 /// <typeparam name="T"></typeparam>
 public class EventData<T> : EventData
 {
-    public EventData(string name, T value) : base(name)
+    public T value;
+    public EventData(string name, T v = default(T)) : base(name)
     {
-        this.value = value;
+        this.value = v;
     }
 }
 
-public class EventDataLua: EventData
+public class EventDataLua: EventData<object>
 {
-    public object obj = null;
-    public override object value
+    public object obj
     {
         get
         {
-            return obj;
+            return this.value;
         }
 
         set
         {
-            obj = value;
+            this.value = value;
         }
     }
     public EventDataLua(string name) : base(name)
