@@ -4,6 +4,7 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-blue.svg)](https://github.com/sheenli/YKFrameworkTolua/pulls)
 [![QQ群](https://img.shields.io/gitter/room/nwjs/nw.js.svg)](https://jq.qq.com/?_wv=1027&k=5kT8aGe)
 
+码云地址：https://gitee.com/youkepro/YKFrameworkTolua
 
 # YKFramework简介
 [TOC]
@@ -32,7 +33,7 @@
 * LuaLib `用于idea提示用的源码`
 
 ## 特殊文件说明
-
+ 
 * Assets/AB/gamecfg/defres.json   `配置的加载资源以及资源组的信息`
 * Assets/YKFramwork/Resources/gamecfg.asset `框架的配置信息`
 
