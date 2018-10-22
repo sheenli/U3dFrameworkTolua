@@ -6,7 +6,11 @@ using UnityEngine;
 
 public class LoadingUI
 {
-    
+    public List<string> loadingAbs = new List<string>()
+    {
+        "loadscenepack.bytes",
+        "loadinggroup.bytes"
+    };
     private GButton mBtnStart = null;
     //private GButton mBtnSound = null;
     private Controller mLoadCtrl = null;
@@ -25,14 +29,53 @@ public class LoadingUI
 
     public void Show(Action callback)
     {
-        ResMgr.Intstance.LoadGroup("Loading", () =>
-         {
-             _Show();
-             if (callback != null)
-             {
-                 callback();
-             }
-         });
+        if (GameCfgMgr.Instance.resCfg != null)
+        {
+            ResMgr.Intstance.LoadGroup("Loading", () =>
+            {
+                _Show();
+                if (callback != null)
+                {
+                    callback();
+                }
+            });
+            return;
+        }
+        List<string> allLoad = new List<string>();
+        foreach (string ab in loadingAbs)
+        {
+            allLoad.Add(ab);
+        }
+        allLoad.Add(AppConst.CoreDef.CfgABName);
+        Action a = null;
+
+        a = () =>
+        {
+            ComUtil.WWWLoad(AppConst.SourceResPathUrl + "/" + allLoad[0], www =>
+            {
+                CompressHelper.DecompressBytesLZMA(www.bytes, AppConst.AppExternalDataPath + "/" + allLoad[0]);
+                allLoad.RemoveAt(0);
+                if (allLoad.Count > 0)
+                {
+                    if (a != null)
+                        a();
+                }
+                else
+                {
+                    GameCfgMgr.Instance.Init();
+                    ResMgr.Intstance.LoadGroup("Loading", () =>
+                    {
+                        _Show();
+                        if (callback != null)
+                        {
+                            callback();
+                        }
+                    });
+                }
+            });
+        };
+
+        a();
     }
 
     public void Destroy()
