@@ -350,6 +350,7 @@ public static class ToLuaMenu
         if (!File.Exists(CustomSettings.saveDir))
         {
             Directory.CreateDirectory(CustomSettings.saveDir);
+            AssetDatabase.Refresh();
         }
 
         allTypes.Clear();
