@@ -106,7 +106,12 @@ public static class ToLuaMenu
     static ToLuaMenu()
     {
          string dir = CustomSettings.saveDir;
-         string[] files = Directory.GetFiles(dir, "*.cs", SearchOption.TopDirectoryOnly);
+        if (!File.Exists(CustomSettings.saveDir))
+        {
+            Directory.CreateDirectory(CustomSettings.saveDir);
+            AssetDatabase.Refresh();
+        }
+        string[] files = Directory.GetFiles(dir, "*.cs", SearchOption.TopDirectoryOnly);
  
          if (files.Length < 3 && beCheck)
          {

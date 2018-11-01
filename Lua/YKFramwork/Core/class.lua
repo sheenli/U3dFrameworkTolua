@@ -1,4 +1,4 @@
-﻿local _class ={}
+local _class ={}
 function class(super,cstype)
     local cs_func_tbl = {}
 

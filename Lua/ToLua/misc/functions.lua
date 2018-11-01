@@ -1,4 +1,4 @@
-﻿local require = require
+local require = require
 local string = string
 local table = table
 

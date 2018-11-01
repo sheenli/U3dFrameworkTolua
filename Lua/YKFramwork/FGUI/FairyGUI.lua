@@ -1,4 +1,4 @@
-﻿
+
 local fgui =
 {
 	EventContext  = FairyGUI.EventContext,

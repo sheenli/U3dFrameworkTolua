@@ -80,7 +80,7 @@ public class Initialization : EventDispatcherNode
         LuaInterface.Debugger.useLog = flag;
         if (flag)
         {
-            Debug.logger.filterLogType = LogType.Log;
+            Debug.unityLogger.filterLogType = LogType.Log;
         }
         else
         {
@@ -89,7 +89,7 @@ public class Initialization : EventDispatcherNode
             {
                 GameObject.Destroy(req);
             }
-            Debug.logger.filterLogType = LogType.Exception;// = LogType.Error;
+            Debug.unityLogger.filterLogType = LogType.Exception;// = LogType.Error;
         }
     }
 }

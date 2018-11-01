@@ -193,7 +193,7 @@ public class AssetGroupMgr
         m_HorizontalSplitterRect.height = m_Position.height;
 
         EditorGUIUtility.AddCursorRect(m_HorizontalSplitterRect, MouseCursor.ResizeHorizontal);
-        if (Event.current.type == EventType.mouseDown && m_HorizontalSplitterRect.Contains(Event.current.mousePosition))
+        if (Event.current.type == EventType.MouseDown && m_HorizontalSplitterRect.Contains(Event.current.mousePosition))
             m_ResizingHorizontalSplitter = true;
 
         if (m_ResizingHorizontalSplitter)
@@ -222,7 +222,7 @@ public class AssetGroupMgr
 
 
         EditorGUIUtility.AddCursorRect(m_VerticalSplitterRect, MouseCursor.ResizeVertical);
-        if (Event.current.type == EventType.mouseDown && m_VerticalSplitterRect.Contains(Event.current.mousePosition))
+        if (Event.current.type == EventType.MouseDown && m_VerticalSplitterRect.Contains(Event.current.mousePosition))
             m_ResizingVerticalSplitter = true;
 
       

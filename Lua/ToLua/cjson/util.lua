@@ -1,4 +1,4 @@
-﻿local json = require "cjson"
+local json = require "cjson"
 
 -- Various common routines used by the Lua CJSON package
 --

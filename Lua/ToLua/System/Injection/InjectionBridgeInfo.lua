@@ -1,4 +1,4 @@
-﻿return {
+return {
 	["AccessingArray"] = 
 		{
 			["OnApplicationQuit"] = 34, 

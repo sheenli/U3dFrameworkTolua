@@ -1,4 +1,4 @@
-﻿if System.Reflection == nil then    
+if System.Reflection == nil then    
     System.Reflection = {}
 end
 

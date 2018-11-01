@@ -1,4 +1,4 @@
-﻿local _M = {}
+local _M = {}
 
 if module then
     mbox = _M

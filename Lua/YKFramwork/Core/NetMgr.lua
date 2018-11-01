@@ -1,4 +1,4 @@
-﻿local sprotoLoader = require "Sproto.sprotoloader"
+local sprotoLoader = require "Sproto.sprotoloader"
 local print_r = require "Sproto.print_r"
 local json = require "cjson"
 local clientSp

@@ -1,4 +1,4 @@
-﻿local utf8 = {}
+local utf8 = {}
 
 --byte index of the next char after the char at byte index i, followed by a valid flag for the char at byte index i.
 --nil if not found. invalid characters are iterated as 1-byte chars.

@@ -494,7 +494,7 @@ public class SProtoToLuaTools : MonoBehaviour
     [MenuItem("Tools/修改所有lua文件编码")]
     public static void ChangeAllLuauTF8()
     {
-        RecursivelyCopyLua("E:/u3dProject/YKServerBySkynet/Server/");
+        RecursivelyCopyLua(AppConst.LuaPath);
         Debug.LogError("所有文件已经编码已经修改完成");
     }
 
@@ -511,7 +511,7 @@ public class SProtoToLuaTools : MonoBehaviour
             {
                 Debug.LogWarning("所有文件已经编码已经修改完成" + file);
                 string bs = File.ReadAllText(file);
-                File.WriteAllText(file, bs, new UTF8Encoding(true));
+                File.WriteAllText(file, bs, new UTF8Encoding(false));
             }
         }
         if (dirs == null || dirs.Length <= 0) return;

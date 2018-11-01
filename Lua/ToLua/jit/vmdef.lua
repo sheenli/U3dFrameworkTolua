@@ -1,4 +1,4 @@
-﻿-- This is a generated file. DO NOT EDIT!
+-- This is a generated file. DO NOT EDIT!
 
 return {
 
