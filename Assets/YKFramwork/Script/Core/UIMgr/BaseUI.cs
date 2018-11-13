@@ -77,7 +77,7 @@ public abstract class BaseUI : Window
         {
             Debug.LogError("创建物体失败");
         }
-        this.contentPane.SetSize(GRoot.inst.width, GRoot.inst.height);
+        this.SetSize(GRoot.inst.width, GRoot.inst.height);
         
 
         var obj = this.contentPane.GetChild(BlackBgName);
